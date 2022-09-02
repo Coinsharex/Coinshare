@@ -4,13 +4,13 @@ require 'json'
 require 'sequel'
 
 module Coinbase
-  # Models a secret request
-  class Request < Sequel::Model
-    # many_to_one: requestor
-    ### THIS IS TEMPORARY
-    one_to_many :donations
+  # Models a donation
+  class Donation < Sequel::Model
+    # many_to_one :donor, class: Coinbase::Account
 
-    plugin :association_dependencies, donations: :destroy
+    ## THIS IS TEMPORARY
+    many_to_one :request
+    # plugin :association_dependencies,
 
     plugin :timestamps
 
@@ -18,12 +18,12 @@ module Coinbase
       JSON(
         {
           data: {
-            type: 'request',
+            type: 'donation',
             attributes: {
               id:,
-              reason:,
               amount:,
-              active:
+              identifier:
+              # ...
             }
           }
         }, options
