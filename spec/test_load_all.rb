@@ -1,0 +1,11 @@
+# frozen_string_literal: true
+
+require_relative '../require_app'
+require_app
+
+def app = Coinbase::Api
+
+unless app.environment == :production
+  require 'rack/test'
+  include Rack::Test::Methods
+end
