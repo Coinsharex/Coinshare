@@ -12,7 +12,10 @@ module Coinbase
     many_to_one :request
     # plugin :association_dependencies,
 
+    plugin :uuid, field: :id
     plugin :timestamps
+    plugin :whitelist_security
+    set_allowed_columns :amount, :identifier
 
     def to_json(options = {})
       JSON(

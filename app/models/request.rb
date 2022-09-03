@@ -9,10 +9,11 @@ module Coinbase
     # many_to_one: requestor
     ### THIS IS TEMPORARY
     one_to_many :donations
-
     plugin :association_dependencies, donations: :destroy
 
     plugin :timestamps
+    plugin :whitelist_security
+    set_allowed_columns :reason, :amount, :active
 
     def to_json(options = {})
       JSON(

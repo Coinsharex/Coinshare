@@ -7,5 +7,5 @@ def app = Coinbase::Api
 
 unless app.environment == :production
   require 'rack/test'
-  include Rack::Test::Methods
+  include Rack::Test::Methods # rubocop:disable Style/MixinUsage
 end

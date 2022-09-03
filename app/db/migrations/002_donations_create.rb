@@ -5,7 +5,8 @@ require 'sequel'
 Sequel.migration do
   change do
     create_table(:donations) do
-      primary_key :id
+      # primary_key :id
+      uuid :id, primary_key: true
       # TEMPORARY
       foreign_key :request_id, table: :requests
 
