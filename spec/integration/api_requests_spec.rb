@@ -30,9 +30,12 @@ describe 'Test Request Handling' do
       _(last_response.status).must_equal 200
 
       result = JSON.parse last_response.body
+
       _(result['data']['attributes']['id']).must_equal id
-      _(result['data']['attributes']['reason']).must_equal existing_req['reason']
+      _(result['data']['attributes']['title']).must_equal existing_req['title']
+      _(result['data']['attributes']['description']).must_equal existing_req['description']
       _(result['data']['attributes']['amount']).must_equal existing_req['amount']
+      _(result['data']['attributes']['location']).must_equal existing_req['location']
     end
 
     it 'SAD: should return error if unknown request requested' do
@@ -42,8 +45,10 @@ describe 'Test Request Handling' do
     end
 
     it 'SECURITY: shoul prevent basic SQL injection targeting IDs' do
-      Coinbase::Request.create(reason: 'School', amount: '30000')
-      Coinbase::Request.create(reason: 'Video Game', amount: '5000')
+      Coinbase::Request.create(title: 'School Help', description: 'Cannot pay for school', location: 'Taipei',
+                               amount: 2500)
+      Coinbase::Request.create(title: 'Video Game', description: 'Need to buy a PS5', location: 'Dominican Republic',
+                               amount: 600)
 
       get '/api/v1/requests/2%20or%20id%3E0'
 
@@ -68,7 +73,10 @@ describe 'Test Request Handling' do
       req = Coinbase::Request.first
 
       _(created['id']).must_equal req.id
-      _(created['reason']).must_equal @req_data['reason']
+      _(created['title']).must_equal @req_data['title']
+      _(created['description']).must_equal @req_data['description']
+      _(created['amount']).must_equal @req_data['amount']
+      _(created['location']).must_equal @req_data['location']
     end
 
     it 'SECURITY: should not create request with mass assignment' do

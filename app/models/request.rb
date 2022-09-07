@@ -8,13 +8,13 @@ module Coinbase
   class Request < Sequel::Model
     many_to_one :requestor, class: :'Coinbase::Account'
 
-    many_to_many :donations,
-                 class: :'Coinbase::Request',
-                 join_table: :requests_donations,
-                 left_key: :request_id, right_key: :donation_id
+    many_to_many :loans,
+                 class: :'Coinbase::Loan',
+                 join_table: :requests_loans,
+                 left_key: :request_id, right_key: :loan_id
 
     plugin :association_dependencies,
-           donations: :destroy
+           loans: :nullify
 
     plugin :timestamps
     plugin :whitelist_security

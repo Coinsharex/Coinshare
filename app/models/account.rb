@@ -8,14 +8,14 @@ module Coinbase
   # Models a registered account
   class Account < Sequel::Model
     one_to_many :requests, class: :'Coinbase::Request', key: :requestor_id
-    one_to_many :donations
+    one_to_many :loans, class: :'Coinbase::Loan', key: :lender_id
 
     plugin :association_dependencies,
            requests: :destroy,
-           donations: :destroy
+           loans: :destroy
 
     plugin :whitelist_security
-    set_allowed_columns :first_name, :last_name,
+    set_allowed_columns :first_name, :last_name, :email,
                         :password, :occupation, :university, :field_of_study, :study_level, :picture, :bio
 
     plugin :timestamps, update_on_create: true

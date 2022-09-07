@@ -21,10 +21,10 @@ module Coinbase
         routing.on 'accounts' do
           @account_route = "#{@api_root}/accounts"
 
-          routing.on String do |username|
-            # GET api/v1/accounts/[username]
+          routing.on String do |email|
+            # GET api/v1/accounts/[email]
             routing.get do
-              account = Account.first(username:)
+              account = Account.first(email:)
               account ? account.to_json : raise('Account not found')
             rescue StandardError
               routing.halt 404, { message: error.message }.to_json
@@ -52,34 +52,34 @@ module Coinbase
           @req_route = "#{@api_root}/requests"
 
           routing.on String do |req_id|
-            routing.on 'donations' do
-              @donation_route = "#{@api_root}/requests/#{req_id}/donations"
-              # GET api/v1/requests/[req_id]/donations/[donation_id]
-              routing.get String do |donation_id|
-                donation = Donation.where(request_id: req_id, id: donation_id).first
-                donation ? donation.to_json : raise('Donation not found')
+            routing.on 'loans' do
+              @loan_route = "#{@api_root}/requests/#{req_id}/loans"
+              # GET api/v1/requests/[req_id]/loans/[loan_id]
+              routing.get String do |loan_id|
+                loan = Loan.first(id: loan_id)
+                loan ? loan.to_json : raise('Loan not found')
               rescue StandardError => e
                 routing.halt 404, { message: e.message }.to_json
               end
 
-              # GET api/v1/requests/[req_id]/donations
+              # GET api/v1/requests/[req_id]/loans
               routing.get do
-                output = { data: Request.first(id: req_id).donations }
+                output = { data: Request.first(id: req_id).loans }
                 JSON.pretty_generate(output)
               rescue StandardError
-                routing.halt 404, message: 'Could not find donations'
+                routing.halt 404, message: 'Could not find loans'
               end
 
-              # POST api/v1/requests/[ID]/donations
+              # POST api/v1/requests/[ID]/loans
               routing.post do
                 new_data = JSON.parse(routing.body.read)
                 req = Request.first(id: req_id)
-                new_donation = req.add_donation(new_data)
-                raise 'Could not save donation' unless new_donation
+                new_loan = req.add_loan(new_data)
+                raise 'Could not save loan' unless new_loan
 
                 response.status = 201
-                response['Location'] = "#{@donation_route}/#{new_donation.id}"
-                { message: 'Donation saved', data: new_donation }.to_json
+                response['Location'] = "#{@loan_route}/#{new_loan.id}"
+                { message: 'Loan saved', data: new_loan }.to_json
               rescue Sequel::MassAssignmentRestriction
                 Api.logger.warn "MASS-ASSIGNMENT: #{new_data.keys}"
                 routing.halt 400, { message: 'Illegal Attributes' }.to_json
