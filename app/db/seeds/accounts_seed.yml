@@ -1,0 +1,28 @@
+---
+- first_name: Thierry
+  last_name: Marcelin
+  email: marcelinthierry@gmail.com
+  password: Thierry
+  occupation: Student
+  university: NYCU
+  field_of_study: EECS
+  study_level: Master
+  bio: Coder, Football lover, Gamer, Food lover
+- first_name: Loudwige
+  last_name: Odice
+  email: odiceloud99@gmail.com
+  password: Loudwige
+  occupation: Student
+  university: NYCU
+  field_of_study: EECS
+  study_level: Master
+  bio: Coder, Hairdresser, Food lover, Fashionista
+- first_name: Fabrice
+  last_name: Marcelin
+  email: fabricemarcelin@gmail.com
+  password: Fabrice
+  occupation: Software Developer
+  university: VT
+  field_of_study: CS
+  study_level: Master
+  bio: Coder, Father, Food Lover

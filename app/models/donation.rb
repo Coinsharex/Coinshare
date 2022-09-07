@@ -6,16 +6,20 @@ require 'sequel'
 module Coinbase
   # Models a donation
   class Donation < Sequel::Model
-    # many_to_one :donor, class: Coinbase::Account
+    many_to_one :donor, class: :'Coinbase::Account'
 
-    ## THIS IS TEMPORARY
-    many_to_one :request
-    # plugin :association_dependencies,
+    many_to_many :requests,
+                 class: :'Credence::Request',
+                 join_table: :requests_donations,
+                 left_key: :donation_id, right_key: :request_id
+
+    plugin :association_dependencies,
+           requests: :destroy
 
     plugin :uuid, field: :id
     plugin :timestamps
     plugin :whitelist_security
-    set_allowed_columns :amount, :identifier
+    set_allowed_columns :amount, :identifier, :comment, :anonymous
 
     def to_json(options = {})
       JSON(
@@ -25,7 +29,9 @@ module Coinbase
             attributes: {
               id:,
               amount:,
-              identifier:
+              identifier:,
+              comment:,
+              anonymous:
               # ...
             }
           }
