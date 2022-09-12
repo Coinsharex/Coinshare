@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 source 'https://rubygems.org'
+ruby File.read('.ruby-version').strip
 
 # Web API
 gem 'json'
@@ -9,33 +10,40 @@ gem 'roda', '~>3'
 
 # Configuration
 gem 'figaro', '~>1'
-gem 'rake', '~>13'
+gem 'rake'
 
 # Security
 gem 'bundler-audit'
 gem 'rbnacl', '~>7'
 
 # Database
-gem 'hirb', '~>0'
+gem 'hirb'
 gem 'sequel', '~>5'
-group :development, :test do
-  gem 'sequel-seed'
-  gem 'sqlite3'
-end
 
-# Performance
-gem 'rubocop-performance'
+group :production do
+  gem 'pg'
+end
 
 # Testing
 group :test do
   gem 'minitest'
   gem 'minitest-rg'
-  gem 'rack-test'
 end
 
-# Development
 gem 'pry'
-gem 'rerun'
 
-# Quality
-gem 'rubocop'
+group :development do
+  gem 'rerun'
+  gem 'rubocop'
+  gem 'rubocop-performance'
+
+end
+
+group :development, :test do
+  gem 'rack-test'
+  gem 'sequel-seed'
+  gem 'sqlite3'
+end
+
+# Coverage
+gem 'simplecov'

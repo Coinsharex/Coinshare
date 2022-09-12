@@ -11,6 +11,7 @@ module Coinbase
   class Api < Roda
     plugin :environments
 
+    # rubocop:disable Lint/ConstantDefinitionInBlock
     configure do
       # load config secrets into local environment variables (ENV)
       Figaro.application = Figaro::Application.new(
@@ -25,7 +26,7 @@ module Coinbase
       # Connect and make the database accessible to other classes
       db_url = ENV.delete('DATABASE_URL')
       DB = Sequel.connect("#{db_url}?encoding=utf8")
-      def self.DB = DB
+      def self.DB = DB # rubocop:disable Naming/MethodName
 
       # Logger setup
       LOGGER = Logger.new($stderr)
@@ -34,7 +35,7 @@ module Coinbase
       # Load crypto keys
       SecureDB.setup(ENV.delete('DB_KEY'))
     end
-
+    # rubocop:enable Lint/ConstantDefinitionInBlock
     configure :development, :test do
       require 'pry'
       logger.level = Logger::ERROR
