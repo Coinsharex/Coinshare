@@ -1,7 +1,21 @@
 ---
-- reason: "Semester payment"
-  amount: "$10,000 NTD"
-  active: "Yes"
-- reason: "Surgery"
-  amount: "$90,000 NTD"
-  active: "Yes"
+- title: "Help for semester payment"
+  description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur."
+  amount: 10000
+  active: false
+  location: Hsinchu City
+- title: "House payment"
+  description: "I am having issues finding the money for rent this month"
+  amount: 90000
+  active: true
+  location: Los Angeles
+- title: "Credit Fees"
+  description: "I habe more than 10 crefits to take. And if you help, it would gladly help"
+  amount: 60000
+  active: false
+  location: Taipei City
+- title: "Travel"
+  description: "In need to take some well deserved rest in a different country"
+  amount: 33000
+  active: true
+  location: Taoyuan City

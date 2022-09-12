@@ -6,13 +6,19 @@ require 'sequel'
 module Coinbase
   # Models a secret request
   class Request < Sequel::Model
-    # many_to_one: requestor
-    ### THIS IS TEMPORARY
-    one_to_many :donations
+    many_to_one :requestor, class: :'Coinbase::Account'
 
-    plugin :association_dependencies, donations: :destroy
+    many_to_many :loans,
+                 class: :'Coinbase::Loan',
+                 join_table: :requests_loans,
+                 left_key: :request_id, right_key: :loan_id
+
+    plugin :association_dependencies,
+           loans: :nullify
 
     plugin :timestamps
+    plugin :whitelist_security
+    set_allowed_columns :title, :description, :location, :amount, :active
 
     def to_json(options = {})
       JSON(
@@ -21,7 +27,9 @@ module Coinbase
             type: 'request',
             attributes: {
               id:,
-              reason:,
+              title:,
+              description:,
+              location:,
               amount:,
               active:
             }

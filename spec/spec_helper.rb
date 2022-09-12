@@ -9,10 +9,13 @@ require 'yaml'
 require_relative 'test_load_all'
 
 def wipe_database
-  app.DB[:donations].delete
-  app.DB[:requests].delete
+  Coinbase::Loan.map(&:destroy)
+  Coinbase::Request.map(&:destroy)
+  Coinbase::Account.map(&:destroy)
 end
 
-DATA = {} # rubocop:disable Style/MutableConstant
-DATA[:donations] = YAML.safe_load File.read('app/db/seeds/donation_seeds.yml')
-DATA[:requests] = YAML.safe_load File.read('app/db/seeds/request_seeds.yml')
+DATA = {
+  accounts: YAML.safe_load(File.read('app/db/seeds/account_seeds.yml')),
+  loans: YAML.safe_load(File.read('app/db/seeds/loan_seeds.yml')),
+  requests: YAML.safe_load(File.read('app/db/seeds/request_seeds.yml'))
+}.freeze
