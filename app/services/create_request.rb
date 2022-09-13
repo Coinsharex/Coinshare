@@ -3,8 +3,8 @@
 module Coinbase
   # Service object to create a new request for an account
   class CreateRequest
-    def self.call(owner_id:, req_data:)
-      Account.find(id: owner_id)
+    def self.call(requestor:, req_data:)
+      Account.find(id: requestor)
              .add_request(req_data)
     end
   end

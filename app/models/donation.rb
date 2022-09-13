@@ -5,13 +5,13 @@ require 'sequel'
 
 module Coinbase
   # Models a loan
-  class Loan < Sequel::Model
-    many_to_one :lender, class: :'Coinbase::Account'
+  class Donation < Sequel::Model
+    many_to_one :donor, class: :'Coinbase::Account'
 
     many_to_many :requests,
                  class: :'Coinbase::Request',
-                 join_table: :requests_loans,
-                 left_key: :loan_id, right_key: :request_id
+                 join_table: :requests_donations,
+                 left_key: :donation_id, right_key: :request_id
 
     plugin :association_dependencies,
            requests: :nullify
@@ -19,8 +19,7 @@ module Coinbase
     plugin :uuid, field: :id
     plugin :timestamps
     plugin :whitelist_security
-    set_allowed_columns :amount, :identifier, :comment, :interest_rate, :duration, :penalty_fee,
-                        :anonymous
+    set_allowed_columns :amount, :identifier, :comment, :anonymous
 
     def to_json(options = {})
       JSON(
@@ -32,9 +31,6 @@ module Coinbase
               amount:,
               identifier:,
               comment:,
-              interest_rate:,
-              duration:,
-              penalty_fee:,
               anonymous:
               # ...
             }

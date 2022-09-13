@@ -13,9 +13,9 @@ module Coinbase
         # GET api/v1/accounts/[email]
         routing.get do
           account = Account.first(email:)
-          account ? account.to_jsoin : raise('Account not found')
-        rescue StandardError
-          routing.halt 404, { message: error.message }.to_json
+          account ? account.to_json : raise('Account not found')
+        rescue StandardError => e
+          routing.halt 404, { message: e.message }.to_json
         end
       end
 

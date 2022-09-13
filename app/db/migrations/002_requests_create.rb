@@ -12,6 +12,7 @@ Sequel.migration do
       String      :description, null: false
       Integer     :amount, null: false
       String      :location, null: false
+      String      :category, null: false
       TrueClass   :active, default: true
 
       DateTime    :created_at

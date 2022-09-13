@@ -36,6 +36,7 @@ describe 'Test Request Handling' do
       _(result['data']['attributes']['description']).must_equal existing_req['description']
       _(result['data']['attributes']['amount']).must_equal existing_req['amount']
       _(result['data']['attributes']['location']).must_equal existing_req['location']
+      _(result['data']['attributes']['category']).must_equal existing_req['category']
     end
 
     it 'SAD: should return error if unknown request requested' do
@@ -46,9 +47,9 @@ describe 'Test Request Handling' do
 
     it 'SECURITY: shoul prevent basic SQL injection targeting IDs' do
       Coinbase::Request.create(title: 'School Help', description: 'Cannot pay for school', location: 'Taipei',
-                               amount: 2500)
+                               amount: 2500, category: 'Fun')
       Coinbase::Request.create(title: 'Video Game', description: 'Need to buy a PS5', location: 'Dominican Republic',
-                               amount: 600)
+                               amount: 600, category: 'School')
 
       get '/api/v1/requests/2%20or%20id%3E0'
 
@@ -77,6 +78,7 @@ describe 'Test Request Handling' do
       _(created['description']).must_equal @req_data['description']
       _(created['amount']).must_equal @req_data['amount']
       _(created['location']).must_equal @req_data['location']
+      _(created['category']).must_equal @req_data['category']
     end
 
     it 'SECURITY: should not create request with mass assignment' do
