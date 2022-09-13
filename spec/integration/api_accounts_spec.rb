@@ -6,6 +6,7 @@ describe 'Test Account Handling' do
   include Rack::Test::Methods
 
   before do
+    @req_header = { 'CONTENT_TYPE' => 'application/json' }
     wipe_database
   end
 
@@ -17,8 +18,8 @@ describe 'Test Account Handling' do
       get "/api/v1/accounts/#{account.email}"
       _(last_response.status).must_equal 200
 
-      result = JSON.parse last_response.body
-      _(result['id']).must_equal account.id
+      result = JSON.parse(last_response.body)['attributes']
+
       _(result['first_name']).must_equal account.first_name
       _(result['last_name']).must_equal account.last_name
       _(result['email']).must_equal account.email
@@ -44,10 +45,9 @@ describe 'Test Account Handling' do
       _(last_response.status).must_equal 201
       _(last_response.header['Location'].size).must_be :>, 0
 
-      created = JSON.parse(last_response.body)['data']
+      created = JSON.parse(last_response.body)['data']['attributes']
       account = Coinbase::Account.first
 
-      _(created['id']).must_equal account.id
       _(created['email']).must_equal @account_data['email']
       _(created['first_name']).must_equal @account_data['first_name']
       _(created['last_name']).must_equal @account_data['last_name']

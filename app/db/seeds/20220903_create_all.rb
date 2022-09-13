@@ -2,11 +2,11 @@
 
 Sequel.seed(:development) do
   def run
-    puts 'Seeding account, requests and loans'
+    puts 'Seeding account, requests and donations'
     create_accounts
     create_requests_made
-    create_loans
-    add_loans_to_request
+    create_donations
+    add_donations_to_request
   end
 end
 
@@ -15,9 +15,9 @@ DIR = File.dirname(__FILE__)
 ACCOUNTS_INFO = YAML.load_file("#{DIR}/account_seeds.yml")
 REQUESTOR_INFO = YAML.load_file("#{DIR}/requestors.yml")
 REQUEST_INFO = YAML.load_file("#{DIR}/request_seeds.yml")
-LOAN_INFO = YAML.load_file("#{DIR}/loan_seeds.yml")
-LOAN_SUBMITTER_INFO = YAML.load_file("#{DIR}/submitters_loans.yml")
-REQUEST_LOANS = YAML.load_file("#{DIR}/requests_loans.yml")
+DONATION_INFO = YAML.load_file("#{DIR}/donation_seeds.yml")
+DONATION_SUBMITTER_INFO = YAML.load_file("#{DIR}/submitters_donations.yml")
+REQUEST_DONATIONS = YAML.load_file("#{DIR}/requests_donations.yml")
 
 def create_accounts
   ACCOUNTS_INFO.each do |account_info|
@@ -37,24 +37,24 @@ def create_requests_made
   end
 end
 
-def create_loans
-  LOAN_SUBMITTER_INFO.each do |lender|
+def create_donations
+  DONATION_SUBMITTER_INFO.each do |lender|
     account = Coinbase::Account.first(email: lender['email'])
-    lender['loan_identifier'].each do |loan|
-      loan_data = LOAN_INFO.find { |don| don['identifier'] == loan }
-      Coinbase::CreateLoan.call(
-        submitter_id: account.id, loan_data:
+    lender['donation_identifier'].each do |donation|
+      donation_data = DONATION_INFO.find { |don| don['identifier'] == donation }
+      Coinbase::CreateDonation.call(
+        submitter_id: account.id, donation_data:
       )
     end
   end
 end
 
-def add_loans_to_request
-  REQUEST_LOANS.each do |req_loan|
-    req = Coinbase::Request.first(title: req_loan['req_title'])
-    loan = Coinbase::Loan.first(identifier: req_loan['loan_identifier'])
-    Coinbase::AddLoanToRequest.call(
-      request_id: req.id, loan_id: loan.id
+def add_donations_to_request
+  REQUEST_DONATIONS.each do |req_donation|
+    req = Coinbase::Request.first(title: req_donation['req_title'])
+    donation = Coinbase::Donation.first(identifier: req_donation['donation_identifier'])
+    Coinbase::AddDonationToRequest.call(
+      request_id: req.id, donation_id: donation.id
     )
   end
 end

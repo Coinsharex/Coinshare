@@ -8,11 +8,11 @@ module Coinbase
   # Models a registered account
   class Account < Sequel::Model
     one_to_many :requests, class: :'Coinbase::Request', key: :requestor_id
-    one_to_many :loans, class: :'Coinbase::Loan', key: :lender_id
+    one_to_many :donations, class: :'Coinbase::Donation', key: :donor_id
 
     plugin :association_dependencies,
            requests: :destroy,
-           loans: :destroy
+           donations: :destroy
 
     plugin :whitelist_security
     set_allowed_columns :first_name, :last_name, :email,
@@ -33,16 +33,18 @@ module Coinbase
       JSON(
         {
           type: 'account',
-          id:,
-          first_name:,
-          last_name:,
-          email:,
-          occupation:,
-          university:,
-          field_of_study:,
-          study_level:,
-          picture:,
-          bio:
+          attributes: {
+            id:,
+            first_name:,
+            last_name:,
+            email:,
+            occupation:,
+            university:,
+            field_of_study:,
+            study_level:,
+            picture:,
+            bio:
+          }
         }, options
       )
     end

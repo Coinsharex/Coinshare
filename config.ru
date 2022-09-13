@@ -3,4 +3,4 @@
 require './require_app'
 require_app
 
-run Coinshare::Api.freeze.app
+run Coinbase::Api.freeze.app

@@ -8,17 +8,17 @@ module Coinbase
   class Request < Sequel::Model
     many_to_one :requestor, class: :'Coinbase::Account'
 
-    many_to_many :loans,
-                 class: :'Coinbase::Loan',
-                 join_table: :requests_loans,
-                 left_key: :request_id, right_key: :loan_id
+    many_to_many :donations,
+                 class: :'Coinbase::Donation',
+                 join_table: :requests_donations,
+                 left_key: :request_id, right_key: :donation_id
 
     plugin :association_dependencies,
-           loans: :nullify
+           donations: :nullify
 
     plugin :timestamps
     plugin :whitelist_security
-    set_allowed_columns :title, :description, :location, :amount, :active
+    set_allowed_columns :title, :description, :location, :amount, :active, :category
 
     def to_json(options = {})
       JSON(
@@ -30,6 +30,7 @@ module Coinbase
               title:,
               description:,
               location:,
+              category:,
               amount:,
               active:
             }
