@@ -47,11 +47,17 @@ task :console => :print_env do
 end
 
 namespace :db do
-  require_app(nil) # loads config code files only
-  require 'sequel'
+  task :load do
+    require_app(nil) # loads config code files only
+    require 'sequel'
 
-  Sequel.extension :migration
-  app = Coinbase::Api
+    Sequel.extension :migration
+    @app = Coinbase::Api
+  end
+
+  task :load_models => :load do
+    require_app(%w[lib models services])
+  end
 
   desc 'Run migrations'
   task :migrate => :print_env do
@@ -59,8 +65,8 @@ namespace :db do
     Sequel::Migrator.run(app.DB, 'app/db/migrations')
   end
 
-  desc 'Delete database'
-  task :delete do
+  desc 'Destroy data in database; maintain tables'
+  task :delete => :load do
     Coinbase::Account.dataset.destroy
   end
 
@@ -74,10 +80,6 @@ namespace :db do
     db_filename = "app/db/store/#{Coinbase::Api.environment}.db"
     FileUtils.rm(db_filename)
     puts "Deleted #{db_filename}"
-  end
-
-  task :load_models do
-    require_app(%w[lib models services])
   end
 
   task :reset_seeds => [:load_models] do

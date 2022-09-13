@@ -20,6 +20,10 @@ module Coinbase
 
     plugin :timestamps, update_on_create: true
 
+    def transactions
+      requests + donations
+    end
+
     def password=(new_password)
       self.password_digest = Password.digest(new_password)
     end
@@ -34,7 +38,6 @@ module Coinbase
         {
           type: 'account',
           attributes: {
-            id:,
             first_name:,
             last_name:,
             email:,

@@ -13,6 +13,7 @@ module Coinbase
     end
   end
 
+  # Find account and check password
   class AuthenticateAccount
     def self.call(credentials)
       account = Account.first(email: credentials[:email])
