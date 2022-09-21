@@ -21,18 +21,18 @@ describe 'Test Authentication Routes' do
                       password: @account_data['password'] }
       post 'api/v1/auth/authenticate', credentials.to_json, @req_header
 
-      auth_account = JSON.parse(last_response.body)['attributes']
-      _(last_response.status).must_equal 200
-      _(auth_account['first_name']).must_equal(@account_data['first_name'])
-      _(auth_account['last_name']).must_equal(@account_data['last_name'])
-      _(auth_account['email']).must_equal(@account_data['email'])
-      _(auth_account['occupation']).must_equal(@account_data['occupation'])
-      _(auth_account['university']).must_equal(@account_data['university'])
-      _(auth_account['field_of_study']).must_equal(@account_data['field_of_study'])
-      _(auth_account['study_level']).must_equal(@account_data['study_level'])
-      _(auth_account['bio']).must_equal(@account_data['bio'])
+      auth_account = JSON.parse(last_response.body)
 
-      _(auth_account['id']).must_be_nil
+      account = auth_account['attributes']['account']['attributes']
+      _(last_response.status).must_equal 200
+      _(account['first_name']).must_equal(@account_data['first_name'])
+      _(account['last_name']).must_equal(@account_data['last_name'])
+      _(account['email']).must_equal(@account_data['email'])
+      _(account['occupation']).must_equal(@account_data['occupation'])
+      _(account['university']).must_equal(@account_data['university'])
+      _(account['field_of_study']).must_equal(@account_data['field_of_study'])
+      _(account['study_level']).must_equal(@account_data['study_level'])
+      _(account['id']).must_be_nil
     end
 
     it 'BAD: should not authenticate invalid password' do

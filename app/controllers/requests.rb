@@ -26,7 +26,7 @@ module Coinbase
             output = { data: Request.first(id: req_id).donations }
             JSON.pretty_generate(output)
           rescue StandardError
-            routing.halt 404, message: 'Could not find donations'
+            routing.halt 404, { message: 'Could not find donations' }.to_json
           end
 
           # POST api/v1/requests/[ID]/donations
@@ -42,7 +42,6 @@ module Coinbase
             response['Location'] = "#{@donation_route}/#{new_donation.id}"
             { message: 'Donation saved', data: new_donation }.to_json
           rescue Sequel::MassAssignmentRestriction
-            Api.logger.warn "MASS-ASSIGNMENT: #{new_data.keys}"
             routing.halt 400, { message: 'Illegal Attributes' }.to_json
           rescue StandardError
             routing.halt 500, { message: 'Database error' }.to_json
