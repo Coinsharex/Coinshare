@@ -16,7 +16,6 @@ Sequel.migration do
       String    :field_of_study
       String    :study_level
       File      :picture
-      String    :bio
 
       DateTime  :created_at
       DateTime  :updated_at

@@ -33,12 +33,12 @@ task :audit do
 end
 
 desc 'Checks for release'
-task :release => [:spec, :style, :audit] do
+task :release? => [:spec, :style, :audit] do
   puts "\nReady for release!"
 end
 
 task :print_env do
-  puts "Environment: #{ENV['RACK_ENV'] || 'development'}"
+  puts "Environment: #{ENV.fetch('RACK_ENV', nil) || 'development'}"
 end
 
 desc 'Run application console (pry)'
@@ -60,9 +60,9 @@ namespace :db do
   end
 
   desc 'Run migrations'
-  task :migrate => :print_env do
+  task :migrate => [:load, :print_env] do
     puts 'Migrating database to latest'
-    Sequel::Migrator.run(app.DB, 'app/db/migrations')
+    Sequel::Migrator.run(@app.DB, 'app/db/migrations')
   end
 
   desc 'Destroy data in database; maintain tables'
@@ -71,8 +71,8 @@ namespace :db do
   end
 
   desc 'Delete dev or test database file'
-  task :drop do
-    if app.environment == :production
+  task :drop => :load do
+    if @app.environment == :production
       puts 'Cannot wipe production database!'
       return
     end
@@ -82,17 +82,17 @@ namespace :db do
     puts "Deleted #{db_filename}"
   end
 
-  task :reset_seeds => [:load_models] do
-    app.DB[:schema_seeds].delete if app.DB.tables.include?(:schema_seeds)
+  task :reset_seeds => :load_models do
+    @app.DB[:schema_seeds].delete if @app.DB.tables.include?(:schema_seeds)
     Coinbase::Account.dataset.destroy
   end
 
   desc 'Seeds the development database'
-  task :seed => [:load_models] do
+  task :seed => :load_models do
     require 'sequel/extensions/seed'
     Sequel::Seed.setup(:development)
     Sequel.extension :seed
-    Sequel::Seeder.apply(app.DB, 'app/db/seeds')
+    Sequel::Seeder.apply(@app.DB, 'app/db/seeds')
   end
 
   desc 'Delete all data and reseed'
