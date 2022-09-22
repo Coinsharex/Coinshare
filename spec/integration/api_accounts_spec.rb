@@ -27,7 +27,6 @@ describe 'Test Account Handling' do
       _(result['university']).must_equal account.university
       _(result['field_of_study']).must_equal account.field_of_study
       _(result['study_level']).must_equal account.study_level
-      _(result['bio']).must_equal account.bio
       _(result['salt']).must_be_nil
       _(result['password']).must_be_nil
       _(result['password_hash']).must_be_nil
@@ -56,7 +55,6 @@ describe 'Test Account Handling' do
       _(created['university']).must_equal @account_data['university']
       _(created['field_of_study']).must_equal @account_data['field_of_study']
       _(created['study_level']).must_equal @account_data['study_level']
-      _(created['bio']).must_equal @account_data['bio']
       _(account.password?(@account_data['password'])).must_equal true
       _(account.password?('not_really_the_password')).must_equal false
     end

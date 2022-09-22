@@ -10,19 +10,22 @@ gem 'roda', '~>3'
 
 # Configuration
 gem 'figaro', '~>1'
-gem 'rake'
+gem 'rake', '~>13'
 
 # Security
 gem 'bundler-audit'
 gem 'rbnacl', '~>7'
 
 # Database
-gem 'hirb'
+gem 'hirb', '~>0'
 gem 'sequel', '~>5'
 
-group :production do
-  gem 'pg'
-end
+# group :production do
+#   gem 'pg'
+# end
+
+# External Services
+gem 'http'
 
 # Testing
 group :test do
@@ -30,17 +33,20 @@ group :test do
   gem 'minitest-rg'
 end
 
-gem 'pry'
+# Debugging
+gem 'pry' # necessary for rake console
+gem 'rack-test'
 
+# Development
 group :development do
   gem 'rerun'
+
+  # Quality
   gem 'rubocop'
   gem 'rubocop-performance'
-
 end
 
 group :development, :test do
-  gem 'rack-test'
   gem 'sequel-seed'
   gem 'sqlite3'
 end

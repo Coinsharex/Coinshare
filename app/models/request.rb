@@ -18,22 +18,21 @@ module Coinbase
 
     plugin :timestamps
     plugin :whitelist_security
-    set_allowed_columns :title, :description, :location, :amount, :active, :category
+    set_allowed_columns :title, :description, :location, :amount, :active, :category, :picture
 
     def to_json(options = {})
       JSON(
         {
-          data: {
-            type: 'request',
-            attributes: {
-              id:,
-              title:,
-              description:,
-              location:,
-              category:,
-              amount:,
-              active:
-            }
+          type: 'request',
+          attributes: {
+            id:,
+            title:,
+            description:,
+            location:,
+            category:,
+            amount:,
+            picture:,
+            active:
           }
         }, options
       )

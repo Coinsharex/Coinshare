@@ -13,6 +13,7 @@ Sequel.migration do
       Integer     :amount, null: false
       String      :location, null: false
       String      :category, null: false
+      File        :picture
       TrueClass   :active, default: true
 
       DateTime    :created_at

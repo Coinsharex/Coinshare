@@ -16,9 +16,13 @@ module Coinbase
 
     plugin :whitelist_security
     set_allowed_columns :first_name, :last_name, :email,
-                        :password, :occupation, :university, :field_of_study, :study_level, :picture, :bio
+                        :password, :occupation, :university, :field_of_study, :study_level, :picture
 
     plugin :timestamps, update_on_create: true
+
+    def transactions
+      requests + donations
+    end
 
     def password=(new_password)
       self.password_digest = Password.digest(new_password)
@@ -34,7 +38,6 @@ module Coinbase
         {
           type: 'account',
           attributes: {
-            id:,
             first_name:,
             last_name:,
             email:,
@@ -42,8 +45,7 @@ module Coinbase
             university:,
             field_of_study:,
             study_level:,
-            picture:,
-            bio:
+            picture:
           }
         }, options
       )
