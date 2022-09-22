@@ -16,7 +16,6 @@ module Coinbase
     plugin :association_dependencies,
            requests: :nullify
 
-    plugin :uuid, field: :id
     plugin :timestamps
     plugin :whitelist_security
     set_allowed_columns :amount, :identifier, :comment, :anonymous
