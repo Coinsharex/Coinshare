@@ -57,10 +57,18 @@ module Coinbase
         end
       end
 
+      routing.on 'categories' do
+        routing.on String do |category|
+          output = { data: Request.where(category:).all }
+          JSON.pretty_generate(output)
+        rescue StandardError
+          routing.halt 404, { message: 'Could not find requests' }.to_json
+        end
+      end
+
       # GET api/v1/requests
       routing.get do
-        output = { data: Request.all }
-        JSON.pretty_generate(output)
+        JSON.pretty_generate(data: Request.all)
       rescue StandardError
         routing.halt 404, { message: 'Could not find requests' }.to_json
       end

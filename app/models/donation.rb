@@ -24,16 +24,14 @@ module Coinbase
     def to_json(options = {})
       JSON(
         {
-          data: {
-            type: 'donation',
-            attributes: {
-              id:,
-              amount:,
-              identifier:,
-              comment:,
-              anonymous:
-              # ...
-            }
+          type: 'donation',
+          attributes: {
+            id:,
+            amount:,
+            identifier:,
+            comment:,
+            anonymous:
+            # ...
           }
         }, options
       )

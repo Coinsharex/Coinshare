@@ -2,7 +2,7 @@
 
 require 'http'
 
-module Credence
+module Coinbase
   ## Send email verfification email
   # params:
   #   - registration: hash with keys :email :verification_url

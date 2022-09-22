@@ -13,7 +13,7 @@ module Coinbase
       # require 'pry'
       # binding.pry
       scheme, auth_token = headers['AUTHORIZATION'].split
-      account_payload = AuthToken.payload(auth_token)
+      account_payload = AuthToken.new(auth_token).payload
       scheme.match?(/^Bearer$/i) ? account_payload['attributes'] : nil
     end
   end
