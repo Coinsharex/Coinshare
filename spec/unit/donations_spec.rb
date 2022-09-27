@@ -22,11 +22,11 @@ describe 'Test donation Handling' do
     _(donation.comment).must_equal donation_data['comment']
   end
 
-  it 'SECURITY: should not use deterministic integers' do
+  it 'SECURITY: should use deterministic integers' do
     donation_data = DATA[:donations][1]
     req = Coinbase::Request.first
     new_donation = req.add_donation(donation_data)
 
-    _(new_donation.id.is_a?(Numeric)).must_equal false
+    _(new_donation.id.is_a?(Numeric)).must_equal true
   end
 end

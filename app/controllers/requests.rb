@@ -10,6 +10,17 @@ module Coinbase
     route('requests') do |routing|
       @req_route = "#{@api_root}/requests"
 
+      # GET api/v1/requests/categories
+      routing.on 'categories' do
+        # GET api/v1/requests/categories/[category]
+        routing.on String do |category|
+          output = { data: Request.where(category:).all }
+          JSON.pretty_generate(output)
+        rescue StandardError
+          routing.halt 404, { message: 'Could not find requests' }.to_json
+        end
+      end
+
       routing.on String do |req_id|
         routing.on 'donations' do
           @donation_route = "#{@api_root}/requests/#{req_id}/donations"
@@ -54,15 +65,6 @@ module Coinbase
           req ? req.to_json : raise('Request not found')
         rescue StandardError => e
           routing.halt 404, { message: e.message }.to_json
-        end
-      end
-
-      routing.on 'categories' do
-        routing.on String do |category|
-          output = { data: Request.where(category:).all }
-          JSON.pretty_generate(output)
-        rescue StandardError
-          routing.halt 404, { message: 'Could not find requests' }.to_json
         end
       end
 

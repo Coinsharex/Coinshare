@@ -4,22 +4,22 @@
   amount: 1000
   active: false
   location: Hsinchu City
-  category: School
+  category: school
 - title: "House payment"
   description: "I am having issues finding the money for rent this month"
   amount: 3000
   active: true
   location: Los Angeles
-  category: Livelihood
+  category: livelihood
 - title: "Credit Fees"
   description: "I have more than 10 credits to take. And if you help, it would gladly help"
   amount: 2000
   active: false
   location: Taipei City
-  category: School
+  category: school
 - title: "Travel"
   description: "In need to take some well deserved rest in a different country"
   amount: 1250
   active: true
   location: Taoyuan City
-  category: Health
+  category: health

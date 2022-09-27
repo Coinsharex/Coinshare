@@ -35,10 +35,10 @@ describe 'Test Donation Handling' do
     _(last_response.status).must_equal 200
 
     result = JSON.parse last_response.body
-    _(result['data']['attributes']['id']).must_equal donation.id
-    _(result['data']['attributes']['amount']).must_equal donation_data['amount']
-    _(result['data']['attributes']['identifier']).must_equal donation_data['identifier']
-    _(result['data']['attributes']['comment']).must_equal donation_data['comment']
+    _(result['attributes']['id']).must_equal donation.id
+    _(result['attributes']['amount']).must_equal donation_data['amount']
+    _(result['attributes']['identifier']).must_equal donation_data['identifier']
+    _(result['attributes']['comment']).must_equal donation_data['comment']
   end
 
   it 'SAD: should return error if unknown donation requested' do
@@ -61,7 +61,7 @@ describe 'Test Donation Handling' do
       _(last_response.status).must_equal 201
       _(last_response.header['Location'].size).must_be :>, 0
 
-      created = JSON.parse(last_response.body)['data']['data']['attributes']
+      created = JSON.parse(last_response.body)['data']['attributes']
       donation = Coinbase::Donation.first
 
       _(created['id']).must_equal donation.id

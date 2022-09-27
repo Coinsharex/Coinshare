@@ -21,6 +21,18 @@ describe 'Test Request Handling' do
       _(result['data'].count).must_equal 2
     end
 
+    it 'HAPPY: should be able to get a list of requests by category' do
+      DATA[:requests].each do |request_data|
+        Coinbase::Request.create(request_data)
+      end
+
+      get 'api/v1/requests/categories/school'
+      _(last_response.status).must_equal 200
+
+      result = JSON.parse last_response.body
+      _(result['data'].count).must_equal 2
+    end
+
     it 'HAPPY: should be able to get details of a single request' do
       existing_req = DATA[:requests][1]
       Coinbase::Request.create(existing_req).save
@@ -31,12 +43,12 @@ describe 'Test Request Handling' do
 
       result = JSON.parse last_response.body
 
-      _(result['data']['attributes']['id']).must_equal id
-      _(result['data']['attributes']['title']).must_equal existing_req['title']
-      _(result['data']['attributes']['description']).must_equal existing_req['description']
-      _(result['data']['attributes']['amount']).must_equal existing_req['amount']
-      _(result['data']['attributes']['location']).must_equal existing_req['location']
-      _(result['data']['attributes']['category']).must_equal existing_req['category']
+      _(result['attributes']['id']).must_equal id
+      _(result['attributes']['title']).must_equal existing_req['title']
+      _(result['attributes']['description']).must_equal existing_req['description']
+      _(result['attributes']['amount']).must_equal existing_req['amount']
+      _(result['attributes']['location']).must_equal existing_req['location']
+      _(result['attributes']['category']).must_equal existing_req['category']
     end
 
     it 'SAD: should return error if unknown request requested' do
@@ -45,7 +57,7 @@ describe 'Test Request Handling' do
       _(last_response.status).must_equal 404
     end
 
-    it 'SECURITY: shoul prevent basic SQL injection targeting IDs' do
+    it 'SECURITY: should prevent basic SQL injection targeting IDs' do
       Coinbase::Request.create(title: 'School Help', description: 'Cannot pay for school', location: 'Taipei',
                                amount: 2500, category: 'Fun')
       Coinbase::Request.create(title: 'Video Game', description: 'Need to buy a PS5', location: 'Dominican Republic',
@@ -70,7 +82,7 @@ describe 'Test Request Handling' do
       _(last_response.status).must_equal 201
       _(last_response.header['Location'].size).must_be :>, 0
 
-      created = JSON.parse(last_response.body)['data']['data']['attributes']
+      created = JSON.parse(last_response.body)['data']['attributes']
       req = Coinbase::Request.first
 
       _(created['id']).must_equal req.id
