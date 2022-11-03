@@ -4,7 +4,7 @@ require 'json'
 require 'sequel'
 
 module Coinbase
-  # Models a loan
+  # Models a donation
   class Donation < Sequel::Model
     many_to_one :donor, class: :'Coinbase::Account'
 

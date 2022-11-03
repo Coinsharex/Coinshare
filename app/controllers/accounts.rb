@@ -12,10 +12,14 @@ module Coinbase
       routing.on String do |email|
         # GET api/v1/accounts/[email]
         routing.get do
-          account = Account.first(email:)
-          account ? account.to_json : raise('Account not found')
-        rescue StandardError => e
+          account = GetAccountQuery.call(
+            requestor: @auth_account, email:
+          )
+          account.to_json
+        rescue GetAccountQuery::ForbiddenError => e
           routing.halt 404, { message: e.message }.to_json
+        rescue StandardError
+          routing.halt 500, { message: 'API SERVER ERROR' }.to_json
         end
       end
 

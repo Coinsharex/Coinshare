@@ -20,22 +20,33 @@ module Coinbase
     plugin :whitelist_security
     set_allowed_columns :title, :description, :location, :amount, :active, :category, :picture
 
-    def to_json(options = {})
-      JSON(
-        {
-          type: 'request',
-          attributes: {
-            id:,
-            title:,
-            description:,
-            location:,
-            category:,
-            amount:,
-            picture:,
-            active:
-          }
-        }, options
+    def to_h
+      {
+        type: 'request',
+        attributes: {
+          id:,
+          title:,
+          description:,
+          location:,
+          category:,
+          amount:,
+          picture:,
+          active:
+        }
+      }
+    end
+
+    def full_details
+      to_h.merge(
+        relationships: {
+          requestor:,
+          donations:
+        }
       )
+    end
+
+    def to_json(options = {})
+      JSON(to_h, options)
     end
   end
 end

@@ -8,16 +8,19 @@ module Coinbase
   class Api < Roda
     # rubocop:disable Metrics/BlockLength
     route('requests') do |routing|
+      unauthorized_message = { message: 'Unauthorized Request' }.to_json
+      routing.halt(403, unauthorized_message) unless @auth_account
       @req_route = "#{@api_root}/requests"
 
-      # GET api/v1/requests/categories
       routing.on 'categories' do
-        # GET api/v1/requests/categories/[category]
         routing.on String do |category|
-          output = { data: Request.where(category:).all }
-          JSON.pretty_generate(output)
-        rescue StandardError
-          routing.halt 404, { message: 'Could not find requests' }.to_json
+          # GET api/v1/requests/categories/[category]
+          routing.get do
+            output = { data: Request.where(category:).all }
+            JSON.pretty_generate(output)
+          rescue StandardError
+            routing.halt 404, { message: 'Could not find requests' }.to_json
+          end
         end
       end
 
