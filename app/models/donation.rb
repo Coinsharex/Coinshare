@@ -31,6 +31,9 @@ module Coinbase
             comment:,
             anonymous:
             # ...
+          },
+          include: {
+            donor:
           }
         }, options
       )
