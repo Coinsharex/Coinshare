@@ -47,6 +47,7 @@ module Coinbase
           routing.post do
             new_data = JSON.parse(routing.body.read)
             ## TO BE CHANGED SOON, THIS IS TEMPORARY
+            ## THIS IS WHERE WE WILL CALL THE EXTERNAL API
 
             req = Request.first(id: req_id)
             new_donation = req.add_donation(new_data)
@@ -81,7 +82,7 @@ module Coinbase
       # POST api/v1/requests
       routing.post do
         new_data = JSON.parse(routing.body.read)
-        new_req = Request.new(new_data)
+        new_req = @auth_account.add_request(new_data)
         raise('Could not save request') unless new_req.save
 
         response.status = 201
