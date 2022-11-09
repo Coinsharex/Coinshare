@@ -14,6 +14,15 @@ def wipe_database
   Coinbase::Account.map(&:destroy)
 end
 
+def auth_header(account_data)
+  auth = Coinbase::AuthenticateAccount.call(
+    email: account_data['email'],
+    password: account_data['password']
+  )
+
+  "Bearer #{auth[:attributes][:auth_token]}"
+end
+
 DATA = {
   accounts: YAML.safe_load(File.read('app/db/seeds/account_seeds.yml')),
   donations: YAML.safe_load(File.read('app/db/seeds/donation_seeds.yml')),

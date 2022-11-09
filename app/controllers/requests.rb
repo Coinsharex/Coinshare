@@ -10,6 +10,7 @@ module Coinbase
     route('requests') do |routing|
       unauthorized_message = { message: 'Unauthorized Request' }.to_json
       routing.halt(403, unauthorized_message) unless @auth_account
+
       @req_route = "#{@api_root}/requests"
 
       routing.on 'categories' do
@@ -26,14 +27,14 @@ module Coinbase
 
       routing.on String do |req_id|
         routing.on 'donations' do
-          @donation_route = "#{@api_root}/requests/#{req_id}/donations"
-          # GET api/v1/requests/[req_id]/donations/[donation_id]
-          routing.get String do |donation_id|
-            donation = Donation.first(id: donation_id)
-            donation ? donation.to_json : raise('Donation not found')
-          rescue StandardError => e
-            routing.halt 404, { message: e.message }.to_json
-          end
+          # @donation_route = "#{@api_root}/requests/#{req_id}/donations"
+          # # GET api/v1/requests/[req_id]/donations/[donation_id]
+          # routing.get String do |donation_id|
+          #   donation = Donation.first(id: donation_id)
+          #   donation ? donation.to_json : raise('Donation not found')
+          # rescue StandardError => e
+          #   routing.halt 404, { message: e.message }.to_json
+          # end
 
           # GET api/v1/requests/[req_id]/donations
           routing.get do

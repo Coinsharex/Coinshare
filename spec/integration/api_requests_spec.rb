@@ -7,61 +7,80 @@ describe 'Test Request Handling' do
 
   before do
     wipe_database
+
+    @account_data = DATA[:accounts][0]
+
+    @account = Coinbase::Account.create(@account_data)
+    header 'CONTENT_TYPE', 'application/json'
   end
 
   describe 'Getting requests' do
-    it 'HAPPY: should be able to get list of all requests' do
-      Coinbase::Request.create(DATA[:requests][0]).save
-      Coinbase::Request.create(DATA[:requests][1]).save
-
-      get 'api/v1/requests'
-      _(last_response.status).must_equal 200
-
-      result = JSON.parse last_response.body
-      _(result['data'].count).must_equal 2
-    end
-
-    it 'HAPPY: should be able to get a list of requests by category' do
-      DATA[:requests].each do |request_data|
-        Coinbase::Request.create(request_data)
+    describe 'Getting list of requests' do
+      before do
+        @account.add_request(DATA[:requests][0])
+        @account.add_request(DATA[:requests][1])
+        @account.add_request(DATA[:requests][2])
       end
 
-      get 'api/v1/requests/categories/school'
-      _(last_response.status).must_equal 200
+      it 'HAPPY: should get list for authorized accounts' do
+        header 'AUTHORIZATION', auth_header(@account_data)
 
-      result = JSON.parse last_response.body
-      _(result['data'].count).must_equal 2
+        get 'api/v1/requests'
+        _(last_response.status).must_equal 200
+
+        result = JSON.parse last_response.body
+        _(result['data'].count).must_equal 3
+      end
+
+      it 'HAPPY: should be able to get a list of requests by category' do
+        header 'AUTHORIZATION', auth_header(@account_data)
+
+        get 'api/v1/requests/categories/school'
+        _(last_response.status).must_equal 200
+
+        result = JSON.parse last_response.body
+        _(result['data'].count).must_equal 2
+      end
+
+      it 'BAD: should not process without authorization' do
+        get 'api/v1/requests'
+        _(last_response.status).must_equal 403
+
+        result = JSON.parse last_response.body
+        _(result['data']).must_be_nil
+      end
     end
 
     it 'HAPPY: should be able to get details of a single request' do
-      existing_req = DATA[:requests][1]
-      Coinbase::Request.create(existing_req).save
-      id = Coinbase::Request.first.id
+      req = @account.add_request(DATA[:requests][0])
 
-      get "api/v1/requests/#{id}"
+      header 'AUTHORIZATION', auth_header(@account_data)
+
+      get "api/v1/requests/#{req.id}"
       _(last_response.status).must_equal 200
 
       result = JSON.parse last_response.body
 
-      _(result['attributes']['id']).must_equal id
-      _(result['attributes']['title']).must_equal existing_req['title']
-      _(result['attributes']['description']).must_equal existing_req['description']
-      _(result['attributes']['amount']).must_equal existing_req['amount']
-      _(result['attributes']['location']).must_equal existing_req['location']
-      _(result['attributes']['category']).must_equal existing_req['category']
+      _(result['attributes']['id']).must_equal req.id
+      _(result['attributes']['title']).must_equal req.title
+      _(result['attributes']['description']).must_equal req.description
+      _(result['attributes']['amount']).must_equal req.amount
+      _(result['attributes']['location']).must_equal req.location
+      _(result['attributes']['category']).must_equal req.category
     end
 
     it 'SAD: should return error if unknown request requested' do
+      header 'AUTHORIZATION', auth_header(@account_data)
       get '/api/v1/requests/foobar'
 
       _(last_response.status).must_equal 404
     end
 
     it 'SECURITY: should prevent basic SQL injection targeting IDs' do
-      Coinbase::Request.create(title: 'School Help', description: 'Cannot pay for school', location: 'Taipei',
-                               amount: 2500, category: 'Fun')
-      Coinbase::Request.create(title: 'Video Game', description: 'Need to buy a PS5', location: 'Dominican Republic',
-                               amount: 600, category: 'School')
+      @account.add_request(DATA[:requests][0])
+      @account.add_request(DATA[:requests][1])
+
+      header 'AUTHORIZATION', auth_header(@account_data)
 
       get '/api/v1/requests/2%20or%20id%3E0'
 
@@ -73,12 +92,13 @@ describe 'Test Request Handling' do
 
   describe 'Creatin New Requests' do
     before do
-      @req_header = { 'CONTENT_TYPE' => 'application/json' }
       @req_data = DATA[:requests][1]
     end
 
     it 'HAPPY: should be able to create new requests' do
-      post 'api/v1/requests', @req_data.to_json, @req_header
+      header 'AUTHORIZATION', auth_header(@account_data)
+
+      post 'api/v1/requests', @req_data.to_json
       _(last_response.status).must_equal 201
       _(last_response.header['Location'].size).must_be :>, 0
 
@@ -97,7 +117,8 @@ describe 'Test Request Handling' do
       bad_data = @req_data.clone
       bad_data['created_at'] = '1900-01-01'
 
-      post 'api/v1/requests', bad_data.to_json, @req_header
+      header 'AUTHORIZATION', auth_header(@account_data)
+      post 'api/v1/requests', bad_data.to_json
 
       _(last_response.status).must_equal 400
       _(last_response.header['Location']).must_be_nil
