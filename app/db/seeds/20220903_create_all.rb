@@ -38,9 +38,9 @@ def create_requests_made
 end
 
 def create_donations
-  DONATION_SUBMITTER_INFO.each do |lender|
-    account = Coinbase::Account.first(email: lender['email'])
-    lender['donation_identifier'].each do |donation|
+  DONATION_SUBMITTER_INFO.each do |donor|
+    account = Coinbase::Account.first(email: donor['email'])
+    donor['donation_identifier'].each do |donation|
       donation_data = DONATION_INFO.find { |don| don['identifier'] == donation }
       Coinbase::CreateDonation.call(
         submitter_id: account.id, donation_data:
@@ -51,10 +51,11 @@ end
 
 def add_donations_to_request
   REQUEST_DONATIONS.each do |req_donation|
-    req = Coinbase::Request.first(title: req_donation['req_title'])
+    request = Coinbase::Request.first(title: req_donation['req_title'])
     donation = Coinbase::Donation.first(identifier: req_donation['donation_identifier'])
-    Coinbase::AddDonationToRequest.call(
-      request_id: req.id, donation_id: donation.id
+    account = donation.donor
+    Coinbase::AddDonation.call(
+      account:, request:, donation:
     )
   end
 end

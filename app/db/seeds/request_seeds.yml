@@ -5,21 +5,25 @@
   active: false
   location: Hsinchu City
   category: school
+  picture: "haha"
 - title: "House payment"
-  description: "I am having issues finding the money for rent this month"
+  description: "I am having issues finding the money for rent this monthdkbd kjdbkdb id bidbio diodb yid boi db dyb duyb duyd iutd yud uydg yudg yudg uydg yudg udg uydg uyd guyd yudg uyd gidyg dui duv duvd utdv uid vudv dtv idtvduv dtdui duv divid t vditd itdu vidt vtd viydt vd idtv dty vdiyt ivdt vditvdidt div dtv diyt idtvtyd vyd yd vydv yd vydv."
   amount: 3000
   active: true
   location: Los Angeles
   category: livelihood
+  picture: "haha"
 - title: "Credit Fees"
-  description: "I have more than 10 credits to take. And if you help, it would gladly help"
+  description: "I am having issues finding the money for rent this monthdkbd kjdbkdb id bidbio diodb yid boi db dyb duyb duyd iutd yud uydg yudg yudg uydg yudg udg uydg uyd guyd yudg uyd gidyg dui duv duvd utdv uid vudv dtv idtvduv dtdui duv divid t vditd itdu vidt vtd viydt vd idtv dty vdiyt ivdt vditvdidt div dtv diyt idtvtyd vyd yd vydv yd vydv."
   amount: 2000
   active: false
   location: Taipei City
   category: school
+  picture: "haha"
 - title: "Travel"
-  description: "In need to take some well deserved rest in a different country"
+  description: "I am having issues finding the money for rent this monthdkbd kjdbkdb id bidbio diodb yid boi db dyb duyb duyd iutd yud uydg yudg yudg uydg yudg udg uydg uyd guyd yudg uyd gidyg dui duv duvd utdv uid vudv dtv idtvduv dtdui duv divid t vditd itdu vidt vtd viydt vd idtv dty vdiyt ivdt vditvdidt div dtv diyt idtvtyd vyd yd vydv yd vydv."
   amount: 1250
   active: true
   location: Taoyuan City
   category: health
+  picture: "haha"

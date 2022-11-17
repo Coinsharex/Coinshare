@@ -8,29 +8,46 @@ module Coinbase
   class Api < Roda
     # rubocop:disable Metrics/BlockLength
     route('requests') do |routing|
+      unauthorized_message = { message: 'Unauthorized Request' }.to_json
+      routing.halt(403, unauthorized_message) unless @auth_account
+
       @req_route = "#{@api_root}/requests"
 
-      # GET api/v1/requests/categories
       routing.on 'categories' do
-        # GET api/v1/requests/categories/[category]
         routing.on String do |category|
-          output = { data: Request.where(category:).all }
-          JSON.pretty_generate(output)
-        rescue StandardError
-          routing.halt 404, { message: 'Could not find requests' }.to_json
+          # GET api/v1/requests/categories/[category]
+          routing.get do
+            output = { data: Request.where(category:).all }
+            JSON.pretty_generate(output)
+          rescue StandardError
+            routing.halt 404, { message: 'Could not find requests' }.to_json
+          end
         end
       end
 
       routing.on String do |req_id|
+        @req = Request.first(id: req_id)
+        # GET api/v1/requests/[ID]
+        routing.get do
+          request = GetRequestQuery.call(
+            account: @auth_account, request: @req
+          )
+          { data: request }.to_json
+        rescue GetRequestQuery::NotFoundError => e
+          routing.halt 404, { message: e.message }.to_json
+        rescue StandardError => e
+          routing.halt 500, { message: e.message }.to_json
+        end
+
         routing.on 'donations' do
-          @donation_route = "#{@api_root}/requests/#{req_id}/donations"
-          # GET api/v1/requests/[req_id]/donations/[donation_id]
-          routing.get String do |donation_id|
-            donation = Donation.first(id: donation_id)
-            donation ? donation.to_json : raise('Donation not found')
-          rescue StandardError => e
-            routing.halt 404, { message: e.message }.to_json
-          end
+          # @donation_route = "#{@api_root}/requests/#{req_id}/donations"
+          # # GET api/v1/requests/[req_id]/donations/[donation_id]
+          # routing.get String do |donation_id|
+          #   donation = Donation.first(id: donation_id)
+          #   donation ? donation.to_json : raise('Donation not found')
+          # rescue StandardError => e
+          #   routing.halt 404, { message: e.message }.to_json
+          # end
 
           # GET api/v1/requests/[req_id]/donations
           routing.get do
@@ -44,6 +61,7 @@ module Coinbase
           routing.post do
             new_data = JSON.parse(routing.body.read)
             ## TO BE CHANGED SOON, THIS IS TEMPORARY
+            ## THIS IS WHERE WE WILL CALL THE EXTERNAL API
 
             req = Request.first(id: req_id)
             new_donation = req.add_donation(new_data)
@@ -58,14 +76,6 @@ module Coinbase
             routing.halt 500, { message: 'Database error' }.to_json
           end
         end
-
-        # GET api/v1/requests/[ID]
-        routing.get do
-          req = Request.first(id: req_id)
-          req ? req.to_json : raise('Request not found')
-        rescue StandardError => e
-          routing.halt 404, { message: e.message }.to_json
-        end
       end
 
       # GET api/v1/requests
@@ -78,11 +88,12 @@ module Coinbase
       # POST api/v1/requests
       routing.post do
         new_data = JSON.parse(routing.body.read)
-        new_req = Request.new(new_data)
+        new_req = @auth_account.add_request(new_data)
         raise('Could not save request') unless new_req.save
 
         response.status = 201
         response['Location'] = "#{@req_route}/#{new_req.id}"
+        # new_req.add_donation_summary
         { message: 'Request saved', data: new_req }.to_json
       rescue Sequel::MassAssignmentRestriction
         Api.logger.warn "MASS-ASSIGNMENT: #{new_data.keys}"

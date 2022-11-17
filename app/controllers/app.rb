@@ -8,6 +8,7 @@ module Coinbase
   # Web controller for Coinbase API
   class Api < Roda
     plugin :halt
+    plugin :all_verbs
     plugin :multi_route
     plugin :request_headers
 
@@ -23,10 +24,12 @@ module Coinbase
         @auth_account = authenticated_account(routing.headers)
       rescue AuthToken::InvalidTokenError
         routing.halt 403, { message: 'Invalid auth token' }.to_json
+      rescue AuthToken::ExpiredTokenError
+        routing.halt 403, { message: 'Expired auth token' }.to_json
       end
 
       routing.root do
-        { message: 'CredenceAPI up at /api/v1' }.to_json
+        { message: 'FundusAPI up at /api/v1' }.to_json
       end
 
       routing.on 'api' do
