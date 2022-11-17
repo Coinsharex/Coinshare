@@ -35,6 +35,17 @@ module Coinbase
           routing.halt '403', { message: 'Invalid credentials' }.to_json
         end
       end
+
+      # POST /api/v1/auth/sso
+      routing.post 'sso' do
+        auth_request = JsonRequestBody.parse_symbolize(request.body.read)
+        auth_account = AuthorizeSso.new(Api.config).call(auth_request[:id_token])
+        { data: auth_account }.to_json
+      rescue StandardError => e
+        puts "FAILED to validate Google account: #{e.inspect}"
+        puts e.backtrace
+        routing.halt 400
+      end
     end
   end
 end

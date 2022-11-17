@@ -20,6 +20,13 @@ module Coinbase
 
     plugin :timestamps, update_on_create: true
 
+    def self.create_google_account(google_account)
+      create(first_name: google_account[:first_name],
+             last_name: google_account[:last_name],
+             email: google_account[:email],
+             picture: google_account[:picture])
+    end
+
     def transactions
       requests + donations
     end
