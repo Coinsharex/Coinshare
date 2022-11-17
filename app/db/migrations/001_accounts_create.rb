@@ -11,11 +11,11 @@ Sequel.migration do
       String    :last_name, null: false
       String    :email, unique: true, null: false
       String    :password_digest
-      String    :occupation, null: false
+      String    :occupation, default: '', null: false
       String    :university
       String    :field_of_study
       String    :study_level
-      File      :picture
+      String    :picture
 
       DateTime  :created_at
       DateTime  :updated_at
