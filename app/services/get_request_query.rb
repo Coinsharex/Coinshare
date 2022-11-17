@@ -14,7 +14,6 @@ module Coinbase
       raise NotFoundError unless request
 
       policy = RequestPolicy.new(account, request)
-      raise ForbiddenError unless policy.can_view?
 
       request.full_details.merge(policies: policy.summary)
     end

@@ -7,6 +7,7 @@ module Coinbase
   # Models a secret request
   class Request < Sequel::Model
     many_to_one :requestor, class: :'Coinbase::Account'
+    one_to_one :summary, class: :'Coinbase::DonationSummary'
 
     many_to_many :donations,
                  class: :'Coinbase::Donation',
@@ -40,6 +41,7 @@ module Coinbase
       to_h.merge(
         relationships: {
           requestor:,
+          summary:,
           donations:
         }
       )

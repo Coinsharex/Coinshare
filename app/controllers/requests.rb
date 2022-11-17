@@ -26,6 +26,19 @@ module Coinbase
       end
 
       routing.on String do |req_id|
+        @req = Request.first(id: req_id)
+        # GET api/v1/requests/[ID]
+        routing.get do
+          request = GetRequestQuery.call(
+            account: @auth_account, request: @req
+          )
+          { data: request }.to_json
+        rescue GetRequestQuery::NotFoundError => e
+          routing.halt 404, { message: e.message }.to_json
+        rescue StandardError => e
+          routing.halt 500, { message: e.message }.to_json
+        end
+
         routing.on 'donations' do
           # @donation_route = "#{@api_root}/requests/#{req_id}/donations"
           # # GET api/v1/requests/[req_id]/donations/[donation_id]
@@ -63,14 +76,6 @@ module Coinbase
             routing.halt 500, { message: 'Database error' }.to_json
           end
         end
-
-        # GET api/v1/requests/[ID]
-        routing.get do
-          req = Request.first(id: req_id)
-          req ? req.to_json : raise('Request not found')
-        rescue StandardError => e
-          routing.halt 404, { message: e.message }.to_json
-        end
       end
 
       # GET api/v1/requests
@@ -88,6 +93,7 @@ module Coinbase
 
         response.status = 201
         response['Location'] = "#{@req_route}/#{new_req.id}"
+        # new_req.add_donation_summary
         { message: 'Request saved', data: new_req }.to_json
       rescue Sequel::MassAssignmentRestriction
         Api.logger.warn "MASS-ASSIGNMENT: #{new_data.keys}"
