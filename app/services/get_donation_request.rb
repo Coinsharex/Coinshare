@@ -18,10 +18,10 @@ module Coinbase
     end
 
     # Donation for given
-    def self.call(requestor:, donation:)
+    def self.call(auth:, donation:)
       raise NotFoundError unless donation
 
-      policy = DonationPolicy.new(requestor, donation)
+      policy = DonationPolicy.new(auth[:account], donation, auth[:scope])
       raise ForbiddenError unless policy.can_view?
 
       donation

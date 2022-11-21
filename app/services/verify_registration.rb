@@ -31,7 +31,7 @@ module Coinbase
 
     def html_email
       <<~END_EMAIL
-        <H1>Coinbase App Registration Received</H1>
+        <H1>FundUs App Registration Received</H1>
         <p>Please <a href=\"#{@registration[:verification_url]}\">click here</a>
         to validate your email.
         You will be asked to enter further information to activate your account.</p>
@@ -44,7 +44,7 @@ module Coinbase
           to: [{ 'email' => @registration[:email] }]
         }],
         from: { 'email' => from_email },
-        subject: 'Coinbase Registration Verification',
+        subject: 'FundUs Registration Verification',
         content: [
           { type: 'text/html',
             value: html_email }
