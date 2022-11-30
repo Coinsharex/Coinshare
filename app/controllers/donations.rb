@@ -16,7 +16,7 @@ module Coinbase
 
         routing.get do
           donation = GetDonationQuery.call(
-            requestor: @auth_account, donation: @req_donation
+            auth: @auth, donation: @req_donation
           )
 
           { data: donation }.to_json

@@ -8,8 +8,7 @@ module Coinbase
   class Api < Roda
     # rubocop:disable Metrics/BlockLength
     route('requests') do |routing|
-      unauthorized_message = { message: 'Unauthorized Request' }.to_json
-      routing.halt(403, unauthorized_message) unless @auth_account
+      routing.halt(403, UNAUTH_MSG) unless @auth_account
 
       @req_route = "#{@api_root}/requests"
 
@@ -30,7 +29,7 @@ module Coinbase
         # GET api/v1/requests/[ID]
         routing.get do
           request = GetRequestQuery.call(
-            account: @auth_account, request: @req
+            auth: @auth, request: @req
           )
           { data: request }.to_json
         rescue GetRequestQuery::NotFoundError => e
@@ -88,7 +87,10 @@ module Coinbase
       # POST api/v1/requests
       routing.post do
         new_data = JSON.parse(routing.body.read)
-        new_req = @auth_account.add_request(new_data)
+
+        new_req = CreateRequest.call(
+          auth: @auth, req_data: new_data
+        )
         raise('Could not save request') unless new_req.save
 
         response.status = 201

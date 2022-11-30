@@ -16,7 +16,11 @@ module Coinbase
       policy = RequestPolicy.new(account, request)
       raise ForbiddenError unless policy.can_add_donations?
 
+      # CALL TO PAYMENT API
+      # IF SUCCESS ->
+
       request.add_donation(donation)
+      account.add_donation(donation)
     end
   end
 end

@@ -3,9 +3,10 @@
 module Coinbase
   # Policy to determine donation-access by account
   class DonationPolicy
-    def initialize(account, donation)
+    def initialize(account, donation, auth_scope = nil)
       @account = account
       @donation = donation
+      @auth_scope = auth_scope
     end
 
     # CAN CHANGE IN NEXT MILESTONE
@@ -14,7 +15,7 @@ module Coinbase
     end
 
     def can_edit?
-      account_is_donor?
+      can_write? && account_is_donor?
     end
 
     def summary
@@ -28,6 +29,10 @@ module Coinbase
 
     def account_is_donor?
       @donation.donor == @account
+    end
+
+    def can_write?
+      @auth_scope ? @auth_scope.can_write?('donations') : false
     end
   end
 end
