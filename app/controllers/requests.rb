@@ -91,12 +91,16 @@ module Coinbase
         new_req = CreateRequest.call(
           auth: @auth, req_data: new_data
         )
-        raise('Could not save request') unless new_req.save
+        # raise('Could not save request') unless new_req.save
 
         response.status = 201
         response['Location'] = "#{@req_route}/#{new_req.id}"
         # new_req.add_donation_summary
         { message: 'Request saved', data: new_req }.to_json
+      rescue CreateRequest::MonthlyRequestAllowanceError
+        routing.halt 401, { message: 'You already posted 2 requests this month' }.to_json
+      rescue CreateRequest::YearlyFundsAllownaceError
+        routing.halt 403, { message: 'You have asked more than the allowed threshold for the year' }.to_json
       rescue Sequel::MassAssignmentRestriction
         Api.logger.warn "MASS-ASSIGNMENT: #{new_data.keys}"
         routing.halt 400, { message: 'Illegal Attributes' }.to_json
