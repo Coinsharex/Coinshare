@@ -12,7 +12,7 @@ Sequel.migration do
       Integer     :amount, null: false
       String      :identifier, null: false, unique: true
       String      :comment
-      # String      :currency
+      String      :currency
       TrueClass   :anonymous, default: false
 
       # ...

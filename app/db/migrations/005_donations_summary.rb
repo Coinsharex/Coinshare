@@ -4,7 +4,7 @@ require 'sequel'
 
 Sequel.migration do
   change do
-    create_table(:donation_summaries) do
+    create_table(:request_donations_details) do
       primary_key :id
       foreign_key :request_id
 

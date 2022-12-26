@@ -58,6 +58,7 @@ module Coinbase
 
           # POST api/v1/requests/[ID]/donations
           routing.post do
+            binding.pry
             new_data = JSON.parse(routing.body.read)
             ## TO BE CHANGED SOON, THIS IS TEMPORARY
             ## THIS IS WHERE WE WILL CALL THE EXTERNAL API
