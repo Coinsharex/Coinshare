@@ -7,7 +7,7 @@ module Coinbase
   # Models a secret request
   class Request < Sequel::Model
     many_to_one :requestor, class: :'Coinbase::Account'
-    one_to_one :summary, class: :'Coinbase::RequestDonationsDetails'
+    one_to_one :summary, class: :'Coinbase::RequestDonationsDetails', key: :request_id
 
     many_to_many :donations,
                  class: :'Coinbase::Donation',

@@ -11,19 +11,11 @@ module Coinbase
       @donation_route = "#{@api_root}/donations"
 
       # GET api/v1/donations/[don_id]
-      routing.on String do |donation_id|
-        @req_donation = Donation.first(id: donation_id)
-
+      routing.on 'personal' do
         routing.get do
-          donation = GetDonationQuery.call(
-            auth: @auth, donation: @req_donation
-          )
-
-          { data: donation }.to_json
-        rescue GetDonationQuery::ForbiddenError => e
-          routing.halt 403, { message: e.message }.to_json
-        rescue GetDonationQuery::NotFoundError => e
-          routing.halt 404, { message: e.message }.to_json
+          data = @auth_account.donations
+          output = { data: }
+          JSON.pretty_generate(output)
         rescue StandardError => e
           puts "GET DONATION ERROR: #{e.inspect}"
           routing.halt 500, { message: 'API server error' }.to_json

@@ -21,10 +21,10 @@ module Coinbase
           attributes: {
             count:,
             amount:
-          },
-          include: {
-            request:
           }
+          # include: {
+          #   request:
+          # }
         }, options
       )
     end

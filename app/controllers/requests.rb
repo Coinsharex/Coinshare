@@ -12,11 +12,20 @@ module Coinbase
 
       @req_route = "#{@api_root}/requests"
 
+      routing.on 'personal' do
+        routing.get do
+          data = GetAllRequests.call(@auth_account.requests)
+          output = { data: }
+          JSON.pretty_generate(output)
+        end
+      end
+
       routing.on 'categories' do
         routing.on String do |category|
           # GET api/v1/requests/categories/[category]
           routing.get do
-            output = { data: Request.where(category:).all }
+            data = GetAllRequests.call(Request.where(category:).all)
+            output = { data: }
             JSON.pretty_generate(output)
           rescue StandardError
             routing.halt 404, { message: 'Could not find requests' }.to_json
@@ -39,15 +48,6 @@ module Coinbase
         end
 
         routing.on 'donations' do
-          # @donation_route = "#{@api_root}/requests/#{req_id}/donations"
-          # # GET api/v1/requests/[req_id]/donations/[donation_id]
-          # routing.get String do |donation_id|
-          #   donation = Donation.first(id: donation_id)
-          #   donation ? donation.to_json : raise('Donation not found')
-          # rescue StandardError => e
-          #   routing.halt 404, { message: e.message }.to_json
-          # end
-
           # GET api/v1/requests/[req_id]/donations
           routing.get do
             output = { data: Request.first(id: req_id).donations }
@@ -58,17 +58,17 @@ module Coinbase
 
           # POST api/v1/requests/[ID]/donations
           routing.post do
-            binding.pry
-            new_data = JSON.parse(routing.body.read)
-            ## TO BE CHANGED SOON, THIS IS TEMPORARY
-            ## THIS IS WHERE WE WILL CALL THE EXTERNAL API
+            donation_data = JSON.parse(routing.body.read)
+            request = Request.first(id: req_id)
 
-            req = Request.first(id: req_id)
-            new_donation = req.add_donation(new_data)
-            raise 'Could not save donation' unless new_donation
+            CreateDonation.call(
+              auth: @auth,
+              request:,
+              donation_data:
+            )
 
             response.status = 201
-            response['Location'] = "#{@donation_route}/#{new_donation.id}"
+            # response['Location'] = "#{@donation_route}/#{new_donation.id}"
             { message: 'Donation saved', data: new_donation }.to_json
           rescue Sequel::MassAssignmentRestriction
             routing.halt 400, { message: 'Illegal Attributes' }.to_json
@@ -80,7 +80,9 @@ module Coinbase
 
       # GET api/v1/requests
       routing.get do
-        JSON.pretty_generate(data: Request.all)
+        data = GetAllRequests.call(Request.all)
+        JSON.pretty_generate(data:)
+        # JSON.pretty_generate(data: Request.all)
       rescue StandardError
         routing.halt 404, { message: 'Could not find requests' }.to_json
       end

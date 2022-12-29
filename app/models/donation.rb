@@ -30,8 +30,8 @@ module Coinbase
             identifier:,
             comment:,
             currency:,
-            anonymous:
-            # ...
+            anonymous:,
+            created_at:
           },
           include: {
             donor:
