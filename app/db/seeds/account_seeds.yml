@@ -7,6 +7,8 @@
   university: NYCU
   field_of_study: EECS
   study_level: Master
+  bank_name: Chase Center
+  bank_account: 1234567891331391
 - first_name: Keira
   last_name: Kole
   email: loud@gmail.com
@@ -15,6 +17,8 @@
   university: NYCU
   field_of_study: EECS
   study_level: Master
+  bank_name: ""
+  bank_account: ""
 - first_name: Fabrice
   last_name: Marcelin
   email: fabricemarcelin@gmail.com
@@ -23,3 +27,5 @@
   university: VT
   field_of_study: CS
   study_level: Master
+  bank_name: Wells Fargo
+  bank_account: 131931931391
