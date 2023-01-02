@@ -17,6 +17,10 @@ Sequel.migration do
       String    :field_of_study
       String    :study_level
       String    :picture
+      String    :contact_number
+      String    :address
+      String    :bank_name
+      String    :bank_account
 
       DateTime  :created_at
       DateTime  :updated_at

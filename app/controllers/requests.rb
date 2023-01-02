@@ -47,6 +47,38 @@ module Coinbase
           routing.halt 500, { message: e.message }.to_json
         end
 
+        routing.delete do
+          DeleteRequest.call(
+            auth: @auth,
+            request: @req
+          )
+          response.status = 200
+          { message: 'Request deleted' }.to_json
+        rescue DeleteRequest::NotAllowedError
+          routing.halt 403, { message: 'You cannot delete request that already has donations' }.to_json
+        end
+
+        # PUT api/v1/requests/[ID] => json/data
+        routing.put do
+          data = JSON.parse(routing.body.read)
+
+          updated_req = UpdateRequest.call(
+            auth: @auth,
+            request: @req,
+            data:
+          )
+          response.status = 200
+          { message: 'Request updated', data: updated_req }.to_json
+        rescue UpdateRequest::YearlyFundsAllownaceError
+          routing.halt 403, { message: 'You have asked more than the allowed threshold for the year' }.to_json
+        rescue Sequel::MassAssignmentRestriction
+          Api.logger.warn "MASS-ASSIGNMENT: #{new_data.keys}"
+          routing.halt 400, { message: 'Illegal Attributes' }.to_json
+        rescue StandardError => e
+          Api.logger.error "UNKNOWN ERROR: #{e.message}"
+          routing.halt 400, { message: e.message }.to_json
+        end
+
         routing.on 'donations' do
           # GET api/v1/requests/[req_id]/donations
           routing.get do

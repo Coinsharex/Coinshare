@@ -8,7 +8,7 @@ module Coinbase
     class YearlyFundsAllownaceError < StandardError; end
 
     def self.call(auth:, req_data:)
-      policy = NewRequestPolicy.new(auth[:account], auth[:scope], req_data:)
+      policy = NewRequestPolicy.new(auth[:account], req_data, auth[:scope])
 
       raise MonthlyRequestAllowanceError unless policy.can_add_requests_for_current_month?
       raise YearlyFundsAllownaceError unless policy.can_ask_more_funds?

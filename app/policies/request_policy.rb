@@ -18,7 +18,7 @@ module Coinbase
     end
 
     def can_delete?
-      account_is_requestor?
+      account_is_requestor? && request_has_no_donations?
     end
 
     def can_add_donations?
@@ -42,6 +42,10 @@ module Coinbase
 
     def account_is_requestor?
       @request.requestor == @account
+    end
+
+    def request_has_no_donations?
+      @request.donations.empty?
     end
   end
 end

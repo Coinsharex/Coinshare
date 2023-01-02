@@ -16,7 +16,8 @@ module Coinbase
 
     plugin :whitelist_security
     set_allowed_columns :first_name, :last_name, :email,
-                        :password, :occupation, :university, :field_of_study, :study_level, :picture
+                        :password, :occupation, :university, :field_of_study, :study_level, :picture,
+                        :contact_number, :address, :bank_name, :bank_account
 
     plugin :timestamps, update_on_create: true
 
@@ -48,11 +49,15 @@ module Coinbase
             first_name:,
             last_name:,
             email:,
+            contact_number:,
+            address:,
             occupation:,
             university:,
             field_of_study:,
             study_level:,
-            picture:
+            picture:,
+            bank_name:,
+            bank_account:
           }
         }, options
       )

@@ -3,7 +3,7 @@
 module Coinbase
   # Policy to determine if account can add new request
   class NewRequestPolicy
-    def initialize(account, auth_scope = nil, req_data)
+    def initialize(account, req_data, auth_scope = nil)
       @account = account
       @auth_scope = auth_scope
       @req_data = req_data
@@ -20,7 +20,7 @@ module Coinbase
     def can_ask_more_funds?
       current = DateTime.new(@time.year, 1)
       sum = Request.where(requestor_id: @account.id) { created_at >= current }&.sum(:amount)
-      sum.nil? ? true : sum + @req_data[:req_data]['amount'].to_i < @max_amount_per_year
+      sum.nil? ? true : sum + @req_data['amount'].to_i < @max_amount_per_year
     end
 
     private
