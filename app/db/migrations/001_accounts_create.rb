@@ -6,6 +6,7 @@ Sequel.migration do
   change do
     create_table(:accounts) do
       primary_key :id
+      # one-to-many cards
 
       String    :first_name, null: false
       String    :last_name, null: false
@@ -16,6 +17,10 @@ Sequel.migration do
       String    :field_of_study
       String    :study_level
       String    :picture
+      String    :contact_number
+      String    :address
+      String    :bank_name
+      String    :bank_account
 
       DateTime  :created_at
       DateTime  :updated_at

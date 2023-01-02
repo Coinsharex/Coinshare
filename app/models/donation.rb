@@ -18,7 +18,7 @@ module Coinbase
 
     plugin :timestamps
     plugin :whitelist_security
-    set_allowed_columns :amount, :identifier, :comment, :anonymous
+    set_allowed_columns :amount, :identifier, :comment, :anonymous, :currency
 
     def to_json(options = {})
       JSON(
@@ -29,8 +29,9 @@ module Coinbase
             amount:,
             identifier:,
             comment:,
-            anonymous:
-            # ...
+            currency:,
+            anonymous:,
+            created_at:
           },
           include: {
             donor:

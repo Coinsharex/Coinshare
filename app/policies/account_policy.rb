@@ -8,7 +8,7 @@ class AccountPolicy
   end
 
   def can_view?
-    true if @requestor
+    self_request?
   end
 
   def can_edit?

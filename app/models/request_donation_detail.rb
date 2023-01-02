@@ -4,8 +4,8 @@ require 'json'
 require 'sequel'
 
 module Coinbase
-  # Models a DonationSummary
-  class DonationSummary < Sequel::Model
+  # Models a RequestDonationsDetails
+  class RequestDonationsDetails < Sequel::Model
     many_to_one :request, class: :'Coinbase::Request'
 
     plugin :association_dependencies
@@ -17,14 +17,14 @@ module Coinbase
     def to_json(options = {})
       JSON(
         {
-          type: 'donationsummary',
+          type: 'request_donations_details',
           attributes: {
             count:,
             amount:
-          },
-          include: {
-            request:
           }
+          # include: {
+          #   request:
+          # }
         }, options
       )
     end
