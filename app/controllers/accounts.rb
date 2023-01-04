@@ -25,6 +25,23 @@ module Coinbase
           puts "GET ACCOUNT ERROR: #{e.inspect}"
           routing.halt 500, { message: 'API Server Error' }.to_json
         end
+
+        # PUT api/v1/accounts[email]
+        routing.put do
+          data = JSON.parse(routing.body.read)
+          updated_data = UpdateAccount.call(
+            auth: @auth,
+            email:,
+            data:
+          )
+          response.status = 200
+          { message: 'Account successfully updated', data: updated_data }.to_json
+        rescue UpdateAccount::ForbiddenError => e
+          routing.halt 404, { message: e.message }.to_json
+        rescue Sequel::MassAssignmentRestriction
+          Api.logger.warn "MASSS-ASSIGNMENT:: #{data.keys}"
+          routing.halt 400, { message: 'Illegal Information ' }.to_json
+        end
       end
 
       # POST api/v1/accounts
