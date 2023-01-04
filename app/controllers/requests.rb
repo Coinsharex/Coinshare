@@ -101,6 +101,13 @@ module Coinbase
 
             response.status = 201
             # response['Location'] = "#{@donation_route}/#{new_donation.id}"
+
+            # request.requestor.first_name
+            # request.requestor.last_name
+            # auth[:account].first_name
+            # auth[:account].last_name
+            # request.requestor.email
+
             { message: 'Donation saved', data: new_donation }.to_json
           rescue Sequel::MassAssignmentRestriction
             routing.halt 400, { message: 'Illegal Attributes' }.to_json
